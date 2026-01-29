@@ -1,0 +1,10 @@
+{
+    "name": "Cửa hàng giày dép XYZ",
+    "address": "123 Đường ABC, Quận 1, TP. HCM",
+    "phone": "0123-456-789",
+    "opening_hours": {
+        "monday_friday": "9:00 AM - 9:00 PM",
+        "saturday_sunday": "10:00 AM - 7:00 PM"
+    },
+    "return_policy": "Chấp nhận đổi trả trong vòng 7 ngày với sản phẩm chưa qua sử dụng."
+}

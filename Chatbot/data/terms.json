@@ -1,0 +1,5 @@
+{
+    "shipping": ["giao hàng", "vận chuyển", "ship", "phí ship"],
+    "payment": ["thanh toán", "trả tiền", "COD", "chuyển khoản"],
+    "return": ["đổi trả", "hoàn hàng", "bảo hành"]
+}

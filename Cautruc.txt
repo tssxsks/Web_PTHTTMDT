@@ -1,0 +1,220 @@
+# Cấu trúc code dự án web bán giày dép:
+# Yêu cầu công việc cụ thể:
+- BE: 
+Thiết kế và triển khai cơ sở dữ liệu MongoDB
+Xây dựng cấu trúc project Node.js/Express
+Phát triển API quản lý người dùng và xác thực
+Phát triển API quản lý sản phẩm
+Phát triển API giỏ hàng và đặt hàng
+Tích hợp hệ thống thanh toán (VNPay/Momo)
+Xây dựng API quản lý đơn hàng
+Thiết lập hệ thống lưu trữ hình ảnh (Cloudinary)
+Triển khai bảo mật API (JWT, rate limiting)
+Quản lý tiến độ dự án
+Phân công và điều phối công việc
+Xây dựng API endpoints cho Chatbot
+Tích hợp Redis cho caching dữ liệu
+- FE:
+Thiết lập dự án React với Vite
+Cấu hình Tailwind CSS
+Xây dựng layout chung và navigation
+Phát triển trang chủ
+Phát triển trang danh sách sản phẩm và bộ lọc
+Phát triển trang chi tiết sản phẩm
+Phát triển giỏ hàng
+Phát triển quy trình thanh toán
+Phát triển trang tài khoản người dùng
+Phát triển trang quản lý đơn hàng
+Tối ưu hóa responsive cho các thiết bị
+Thiết kế giao diện Chatbot
+Phát triển component Chatbot
+Tích hợp Chatbot vào giao diện website
+Xây dựng animation và hiệu ứng cho Chatbot
+- Chatbot:
+Xây dựng mô hình phân loại ý định dựa trên BERT
+Huấn luyện và đánh giá mô hình
+Triển khai hệ thống Retrieval-Augmented
+Generation (RAG)
+Cài đặt và cấu hình FAISS cho tìm kiếm sản phẩm
+Xây dựng pipeline xử lý ngôn ngữ tự nhiên
+Tích hợp Gemini 2.0 Flash API
+Xây dựng Knowledge Graph cho thông tin sản phẩm
+Thu thập và xử lý dữ liệu cho Chatbot
+Tinh chỉnh mô hình phân loại ý định
+Cải thiện độ chính xác của RAG
+Phát triển khả năng ghi nhớ ngữ cảnh cuộc trò chuyện
+Kiểm thử độ chính xác của Chatbot
+
+# FrontEnd:
+FE/
+└─ Client/
+    ├─ .env                               # cấu hình FE: backend URL
+    ├─ package.json                       # dependencies React / Vite / Tailwind
+    ├─ vite.config.js                     # config Vite
+    ├─ tailwind.config.js                 # config Tailwind CSS
+    └─ src/
+    ├─ assets/                         # ảnh, icon, logo, banner
+    ├─ components/                     # UI component tái sử dụng
+    │  ├─ Navbar.jsx                   # thanh điều hướng
+    │  ├─ Footer.jsx                   # chân trang
+    │  ├─ Hero.jsx                     # banner trang chủ
+    │  ├─ LatestCollection.jsx         # sản phẩm mới
+    │  ├─ BestSeller.jsx               # sản phẩm bán chạy
+    │  ├─ OurPolicy.jsx                # chính sách cửa hàng
+    │  ├─ NewsletterBox.jsx            # đăng ký nhận tin
+    │  ├─ SearchBar.jsx                # tìm kiếm
+    │  ├─ ProductItem.jsx              # card sản phẩm
+    │  ├─ RelatedProducts.jsx          # gợi ý sản phẩm
+    │  ├─ CartTotal.jsx                # tổng tiền giỏ hàng
+    │  └─ SolanaPayment.jsx            # UI thanh toán Solana
+    ├─ context/
+    │  └─ ShopContext.jsx              # STATE TOÀN CỤC + GỌI API
+    │                                  # - products, cartItems, user, token
+    │                                  # - gọi API:
+    │                                  #   /api/product/*
+    │                                  #   /api/cart/*
+    │                                  #   /api/order/*
+    │                                  #   /api/user/*
+    ├─ services/                       
+    │  ├─ api.js                       # axios instance + interceptor token
+    │  ├─ productApi.js                # gọi API sản phẩm
+    │  ├─ cartApi.js                   # gọi API giỏ hàng
+    │  ├─ orderApi.js                  # gọi API đặt hàng/thanh toán
+    │  └─ chatbotApi.js                # gọi Chatbot service
+    ├─ utils/                          
+    │  ├─ format.js                    # format tiền, ngày
+    │  └─ constants.js                 # status, payment method
+    ├─ pages/
+    │  ├─ Home.jsx                     # trang chủ
+    │  ├─ Collection.jsx               # danh sách sản phẩm
+    │  ├─ Product.jsx                  # chi tiết sản phẩm
+    │  ├─ Cart.jsx                     # giỏ hàng
+    │  ├─ PlaceOrder.jsx               # checkout + chọn payment
+    │  ├─ Verify.jsx                   # xác nhận thanh toán
+    │  ├─ Order.jsx                    # lịch sử đơn hàng
+    │  ├─ Profile.jsx                  # tài khoản người dùng
+    │  ├─ Login.jsx                    # đăng nhập / đăng ký
+    │  ├─ Chatbot.jsx                  # giao diện Chatbot
+    │  ├─ About.jsx                    # giới thiệu
+    │  └─ Contact.jsx                  # liên hệ
+    ├─ App.jsx                         # layout + router + ShopContext
+    └─ main.jsx                        # entry React
+└─ Admin/
+    ├─ .env                               # cấu hình admin: backend URL
+    ├─ package.json                       # deps admin (React/Vite)
+    └─ src/
+    ├─ assets/                         # icon/logo admin (add_icon, order_icon…)
+    ├─ components/
+    │  ├─ Login.jsx                    # đăng nhập admin (lấy token admin)
+    │  ├─ Navbar.jsx                   # thanh top admin
+    │  └─ Sidebar.jsx                  # menu admin (Products/Orders/Dashboard…)
+    ├─ pages/
+    │  ├─ Dashboard.jsx                # tổng quan (thống kê / revenue nếu gọi BE)
+    │  ├─ Add.jsx                      # thêm sản phẩm (upload ảnh)
+    │  ├─ EditProduct.jsx              # sửa sản phẩm
+    │  ├─ List.jsx                     # danh sách sản phẩm (xóa/sửa)
+    │  └─ Orders.jsx                   # quản lý đơn (update status / đổi trả nếu có)
+    ├─ App.jsx                         # route/layout admin
+    └─ main.jsx                        # entry admin
+
+
+# BackEnd:
+BE/
+├─ server.js                          # init Express + middleware + mount routes
+│                                    # mount:
+│                                    #  /api/user    -> userRoute
+│                                    #  /api/product -> productRoute
+│                                    #  /api/cart    -> cartRoute
+│                                    #  /api/order   -> orderRoute
+├─ package.json                       # deps BE (express, mongoose, jwt, bcrypt, multer, cloudinary…)
+├─ config/
+│  ├─ mongodb.js                      # kết nối MongoDB (mongoose.connect)
+│  ├─ cloudinary.js                   # cấu hình Cloudinary (upload ảnh)
+│  └─ redis.js                        # Redis client + cấu hình cache (caching list/detail product…)
+├─ models/
+│  ├─ userModel.js                    # User schema: name/email/password/cartData/phone/address
+│  ├─ productModel.js                 # Product schema: name/description/price/image/category/subCategory/sizes/bestseller/date
+│  └─ orderModel.js                   # Order schema: userId/items/amount/address/status/paymentMethod/payment/date
+│                                    # + returnRequest (đổi trả/hoàn tiền)
+├─ middleware/
+│  ├─ auth.js                         # middleware verify JWT user (bảo vệ route user/cart/order)
+│  ├─ adminAuth.js                    # middleware auth admin (bảo vệ CRUD product, list orders…)
+│  ├─ multer.js                       # middleware upload file (ảnh sản phẩm)
+│  └─ rateLimit.js                    # giới hạn request (login/payment/chatbot…) chống spam/bruteforce
+├─ utils/
+│  ├─ jwt.js                          # helper sign/verify token + expires
+│  ├─ crypto.js                       # HMAC/hash verify (VNPay/MoMo callback)
+│  └─ pagination.js                   # helper phân trang (list orders/revenue…)
+├─ controllers/
+│  ├─ userController.js               # chức năng:
+│  │                                   - registerUser
+│  │                                   - loginUser
+│  │                                   - adminLogin
+│  │                                   - getUserProfile
+│  │                                   - updateUserProfile
+│  ├─ productController.js            # chức năng:
+│  │                                   - addProduct (upload cloudinary)
+│  │                                   - listProducts
+│  │                                   - singleProduct
+│  │                                   - updateProduct
+│  │                                   - removeProduct
+│  │                                   - importProductsFromAssets (seed)
+│  ├─ cartController.js               # chức năng:
+│  │                                   - addToCart
+│  │                                   - updateCart
+│  │                                   - getUserCart
+│  └─ orderController.js              # chức năng:
+│                                      - placeOrder (COD/tạo order)
+│                                      - Gọi service payment: stripe, razorpay, vnpay, momo, solana
+│                                      - Gọi service admin order: allOrder, updateStatus, deleteAllOrders
+│                                      - Gọi service đổi trả: requestReturnOrder, processReturnOrder, getReturnOrders
+│                                      - Gọi service revenue: getRevenueByDay/getRevenueByMonth/getRevenueByProduct
+├─ routes/
+│  ├─ userRoute.js                    # định nghĩa endpoint /api/user/*
+│  ├─ productRoute.js                 # endpoint /api/product/* (CRUD + list/single)
+│  ├─ cartRoute.js                    # endpoint /api/cart/* (add/update/get)
+│  └─ orderRoute.js                   # endpoint /api/order/* (place/verify/list/status/return/revenue…)
+└─ services/
+   ├─ orderService.js                 # placeOrder core (COD): validate cart/stock, tính tiền, tạo order
+   ├─ adminOrderService.js            # admin: allOrder, updateStatus, deleteAllOrders
+   ├─ returnOrderService.js           # đổi trả: requestReturnOrder, processReturnOrder, getReturnOrders
+   ├─ revenueService.js               # revenue: getRevenueByDay/getRevenueByMonth/getRevenueByProduct
+   ├─ stripeService.js                # placeOrderStripe + verifyStripe (webhook/redirect)
+   ├─ razorpayService.js              # placeOrderRazorpay + verifyRazorpay
+   ├─ vnpayService.js                 # placeOrderVnpay + vnpayReturn (HMAC verify)
+   ├─ momoService.js                  # placeOrderMomo + momoIPN/return verify
+   └─ solanaService.js                # placeOrderSolana + verifySolana
+
+#Chatbot:
+Chatbot/
+├─ app.py                             # Flask API /chat
+├─ requirements.txt                   # thư viện AI
+├─ classifier.py                      # phân loại ý định (BERT)
+├─ productQuery.py                    # truy vấn sản phẩm
+├─ data/                              # dữ liệu train + knowledge
+│  ├─ products.csv
+│  ├─ store.json
+│  └─ terms.json
+└─ training/
+   ├─ model.pkl                       # mô hình đã train
+   └─ notebooks.ipynb                 # huấn luyện & đánh giá
+
+# Mô tả các chức năng
+1. Người dùng đăng nhập/đăng ký
+2. Tại home xem được các sản phẩm bestSeller (ảnh sp được lưu ở public/uploads ở BE)
+3. Bán 2 sản phẩm chính Giày / Dép
+    Tại trang sản phẩm, sản phẩm được sắp xếp sẵn theo mới nhất
+    Tại thanh lọc sản phẩm:
+    - Loại sản phẩm- MAIN-TYPE(giày/dép/v.v) thì sau khi ấn thì mới hiện các trường của Loại (PRODUCT-TYPE) và Hãng (ví dụ khi chọn giày thì sẽ hiện các tag liên quan của giày như Loại là : thể thao, v.v; Hãng như: Puma, Nike) cho đỡ phải setup sẵn ở FE
+    - Các tag như Dành cho (Người lớn/ Trẻ em),  Giới tính (Nam, Nữ, Unisex) (với Unisex thì hiển cả ở bộ lọc Nam/Nữ/Unisex), Giá, Size
+4. Trang sản phẩm yêu thích: xem các sản phẩm yêu thích sau khi ấn nút yêu thích
+5. Trang giỏ hàng là trang sau khi đã thêm các sản phẩm vào giỏ hàng, có nút +/- cho số lượng, nút xóa sản phẩm
+6. Trang thanh toán
+
+Với Admin
+1. Admin có thể xem Dashboard
+2. Admin có thể quản lý sản phẩm đăng bán (thêm/sửa/xóa )
+3. Admin có thể quản lý MAIN-TYPE (thêm/sửa/xóa như giày/dép)
+4. Admin có thể quản lý PRODUCT-TYPE (thêm/sửa/xóa như giày thể thao/giày lười cho sp giày)
+5. Admin có thể quản lý hãng (thêm sửa xóa hãng)
+6. Admin có thể quản lý size (thêm/sửa/xóa)

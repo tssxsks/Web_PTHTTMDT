@@ -1,0 +1,3 @@
+"id","name","description","price","image","category","subCategory","sizes","bestseller","date"
+"1","Giày thể thao nam","Mô tả giày 1","1200000","image1.jpg","nam","the-thao","[40,41,42]","true","2024-01-01"
+"2","Giày cao gót nữ","Mô tả giày 2","950000","image2.jpg","nu","cao-got","[36,37,38]","false","2024-01-02"

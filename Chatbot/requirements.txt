@@ -1,0 +1,9 @@
+# BE/Chatbot/requirements.txt
+flask
+torch
+transformers
+faiss-cpu
+# or faiss-gpu depending on the environment
+pandas
+scikit-learn
+google-generativeai
