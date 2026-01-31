@@ -13,6 +13,7 @@ import mainTypeRoute from './routes/mainTypeRoute.js';
 import productTypeRoute from './routes/productTypeRoute.js';
 import brandRoute from './routes/brandRoute.js';
 import sizeRoute from './routes/sizeRoute.js';
+import reviewRoute from './routes/reviewRoute.js';
 
 // Import middlewares
 import { rateLimiter } from './middleware/rateLimit.js';
@@ -48,6 +49,7 @@ app.use('/api/maintype', mainTypeRoute);
 app.use('/api/producttype', productTypeRoute);
 app.use('/api/brand', brandRoute);
 app.use('/api/size', sizeRoute);
+app.use('/api/reviews', reviewRoute);
 
 // Base route
 app.get('/', (req, res) => {

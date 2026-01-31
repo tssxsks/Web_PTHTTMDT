@@ -204,7 +204,7 @@ export const updateProduct = async (req, res) => {
       }
     }
 
-    // Find product
+    // 1. Tìm sản phẩm trong DB
     const product = await Product.findById(id);
     
     if (!product) {
@@ -214,33 +214,54 @@ export const updateProduct = async (req, res) => {
       });
     }
 
-    // Update product fields
+    // 2. Cập nhật các thông tin văn bản (trừ images)
     Object.keys(updateData).forEach(key => {
-      // Do not update images from here, they are handled separately
       if (key !== 'images') {
         product[key] = updateData[key];
       }
     });
 
-    // Handle new file uploads to Cloudinary
+    // 3. Xử lý logic ẢNH (QUAN TRỌNG)
+    // Chỉ thực hiện xóa cũ thay mới NẾU người dùng có upload ảnh mới
     if (req.files && req.files.length > 0) {
+      
+      // A. Xóa ảnh cũ trên Cloudinary để tránh rác server
+      if (product.images && product.images.length > 0) {
+        const oldPublicIds = product.images.map(image => image.public_id);
+        // Dùng Promise.all để xóa nhanh hoặc dùng api.delete_resources
+        try {
+            await cloudinary.api.delete_resources(oldPublicIds);
+        } catch (cloudinaryError) {
+            console.error("Cloudinary delete error (warning only):", cloudinaryError);
+            // Không return lỗi ở đây để code vẫn tiếp tục chạy việc update
+        }
+      }
+
+      // B. Tạo danh sách ảnh mới từ req.files
       const newImages = req.files.map(file => ({
         public_id: file.filename,
         url: file.path
       }));
       
-      // Add new images to existing ones
-      product.images = [...product.images, ...newImages];
+      // C. THAY THẾ hoàn toàn ảnh cũ bằng ảnh mới
+      product.images = newImages; 
     }
+    // Lưu ý: Nếu req.files rỗng (người dùng không chọn ảnh mới), 
+    // thì product.images giữ nguyên giá trị cũ, không bị mất ảnh.
 
-    // Save updated product
+    // 4. Lưu lại vào DB
     await product.save();
+
+    // Populate để trả về data đầy đủ hiển thị luôn nếu cần
+    await product.populate(['mainType', 'productType', 'brand']);
 
     res.status(200).json({
       success: true,
+      message: 'Product updated successfully',
       product
     });
   } catch (error) {
+    console.error("Update product error:", error);
     res.status(500).json({
       success: false,
       message: 'Error updating product',
