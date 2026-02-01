@@ -169,3 +169,13 @@ export const getRevenueByMonth = (year) => {
 export const getRevenueByProduct = () => {
   return api.get('/order/revenue-by-product');
 };
+
+// Lấy danh sách đánh giá của sản phẩm
+export const getProductReviews = (productId) => {
+  return api.get(`/reviews/${productId}`);
+};
+
+// Admin trả lời đánh giá
+export const replyReview = (reviewId, comment) => {
+  return api.put(`/reviews/${reviewId}/reply`, { comment });
+};

@@ -23,6 +23,10 @@ const reviewSchema = new mongoose.Schema(
       required: [true, 'Please add a comment'],
       trim: true,
     },
+    adminReply: {
+      comment: { type: String, trim: true },
+      date: { type: Date },
+    },
   },
   {
     timestamps: true,
@@ -64,7 +68,6 @@ reviewSchema.post('save', function () {
 });
 
 // Gọi tính toán sau khi xóa (Delete)
-// Lưu ý: dùng findOneAndDelete để kích hoạt middleware này
 reviewSchema.post(/^findOneAnd/, function (doc) {
   if (doc) {
     doc.constructor.calcAverageRatings(doc.productId);

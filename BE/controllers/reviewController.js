@@ -1,56 +1,51 @@
 import Review from '../models/reviewModel.js';
 import Product from '../models/productModel.js';
 
-// @desc    Get reviews for a product
-// @route   GET /api/reviews/:productId
-// @access  Public
+// @desc    Lấy danh sách review
 export const getReviews = async (req, res) => {
   try {
     const reviews = await Review.find({ productId: req.params.productId })
       .populate({
         path: 'userId',
-        select: 'name avatar', // Lấy tên và avatar người dùng
+        select: 'name avatar', // Lấy tên và avatar để hiển thị
       })
-      .sort({ createdAt: -1 }); // Mới nhất lên đầu
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
-      success: true,
-      count: reviews.length,
-      reviews,
-    });
+    res.status(200).json({ success: true, reviews });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// @desc    Add or Update Review
-// @route   POST /api/reviews
-// @access  Private
+// @desc    Thêm hoặc Sửa review (Upsert logic)
 export const addReview = async (req, res) => {
   try {
     const { productId, rating, comment } = req.body;
-    
-    // req.user lấy từ middleware protect trong auth.js
-    const userId = req.user._id; 
+    const userId = req.user._id; // Lấy từ token
 
-    // Kiểm tra sản phẩm có tồn tại không
+    // 1. Kiểm tra sản phẩm
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
+      return res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm' });
     }
 
-    // Kiểm tra xem user đã review chưa
-    const alreadyReviewed = await Review.findOne({ productId, userId });
+    // 2. Kiểm tra xem user đã review sản phẩm này chưa
+    const existingReview = await Review.findOne({ productId, userId });
 
-    if (alreadyReviewed) {
-      // Nếu có rồi thì cập nhật (Update)
-      alreadyReviewed.rating = Number(rating);
-      alreadyReviewed.comment = comment;
-      await alreadyReviewed.save();
+    if (existingReview) {
+      // --- TRƯỜNG HỢP 1: ĐÃ CÓ -> CẬP NHẬT (EDIT) ---
+      existingReview.rating = Number(rating);
+      existingReview.comment = comment;
+      // Cập nhật lại thời gian (nếu muốn review nổi lên đầu thì dùng Date.now())
+      // existingReview.createdAt = Date.now(); 
       
-      res.status(200).json({ success: true, message: 'Review updated successfully' });
+      await existingReview.save(); 
+      // Lưu ý: Middleware .post('save') trong Model sẽ tự động tính lại sao trung bình cho Product
+
+      return res.status(200).json({ success: true, message: 'Đã cập nhật đánh giá của bạn' });
+
     } else {
-      // Nếu chưa thì tạo mới (Create)
+      // --- TRƯỜNG HỢP 2: CHƯA CÓ -> TẠO MỚI (ADD) ---
       await Review.create({
         productId,
         userId,
@@ -58,36 +53,57 @@ export const addReview = async (req, res) => {
         comment,
       });
 
-      res.status(201).json({ success: true, message: 'Review added successfully' });
+      return res.status(201).json({ success: true, message: 'Đã gửi đánh giá thành công' });
     }
-    
-    // Lưu ý: Hàm calcAverageRatings trong Model sẽ tự chạy sau khi save
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Lỗi server khi đánh giá' });
   }
 };
 
-// @desc    Delete Review
-// @route   DELETE /api/reviews/:reviewId
-// @access  Private (User/Admin)
+// ... (Hàm deleteReview giữ nguyên)
 export const deleteReview = async (req, res) => {
+    // Code xóa giữ nguyên như cũ
+    try {
+        const review = await Review.findById(req.params.reviewId);
+        if (!review) return res.status(404).json({ success: false, message: "Not found" });
+        
+        if (review.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+            return res.status(401).json({ success: false, message: "Not authorized" });
+        }
+        await Review.findByIdAndDelete(req.params.reviewId);
+        res.status(200).json({ success: true, message: "Deleted" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const replyToReview = async (req, res) => {
   try {
-    const review = await Review.findById(req.params.reviewId);
+    const { reviewId } = req.params;
+    const { comment } = req.body; // Nội dung trả lời của admin
 
+    if (!comment) {
+      return res.status(400).json({ success: false, message: 'Vui lòng nhập nội dung trả lời' });
+    }
+
+    const review = await Review.findById(reviewId);
     if (!review) {
-      return res.status(404).json({ success: false, message: 'Review not found' });
+      return res.status(404).json({ success: false, message: 'Không tìm thấy đánh giá' });
     }
 
-    // Kiểm tra quyền: Chỉ chủ review hoặc Admin mới được xóa
-    if (review.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-      return res.status(401).json({ success: false, message: 'Not authorized to delete this review' });
-    }
+    // Cập nhật trường adminReply
+    review.adminReply = {
+      comment: comment,
+      date: new Date()
+    };
 
-    await Review.findByIdAndDelete(req.params.reviewId);
+    await review.save();
 
-    res.status(200).json({ success: true, message: 'Review deleted successfully' });
+    res.status(200).json({ success: true, message: 'Đã trả lời đánh giá', review });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
