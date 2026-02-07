@@ -1,6 +1,8 @@
 import React from 'react';
 import { useShop } from '../context/ShopContext';
 import Hero from '../components/Hero';
+import Banner from '../components/Banner';
+import MainTypeCategories from '../components/MainTypeCategories';
 import LatestCollection from '../components/LatestCollection';
 // import BestSeller from '../components/BestSeller';
 import OurPolicy from '../components/OurPolicy';
@@ -23,6 +25,8 @@ const Home = () => {
   return (
     <div>
       <Hero />
+      <Banner />
+      <MainTypeCategories />
       {products.length > 0 ? (
         <>
           <LatestCollection />

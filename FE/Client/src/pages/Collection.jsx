@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import ProductItem from '../components/ProductItem';
 import { useShop } from '../context/ShopContext';
@@ -11,6 +12,7 @@ const PRICE_STEP = 100000;
 
 const Collection = () => {
   const { products } = useShop();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Dynamic filter data from BE
   const [mainTypes, setMainTypes] = useState([]);
@@ -19,13 +21,13 @@ const Collection = () => {
 
   // Filter values
   const [filters, setFilters] = useState({
-    mainType: '',
-    productType: '',
-    age: '',
-    gender: '',
-    brand: '',
-    minPrice: PRICE_MIN,
-    maxPrice: PRICE_MAX,
+    mainType: searchParams.get('mainType') || '',
+    productType: searchParams.get('productType') || '',
+    age: searchParams.get('age') || '',
+    gender: searchParams.get('gender') || '',
+    brand: searchParams.get('brand') || '',
+    minPrice: parseInt(searchParams.get('minPrice')) || PRICE_MIN,
+    maxPrice: parseInt(searchParams.get('maxPrice')) || PRICE_MAX,
   });
 
   const [filteredProducts, setFilteredProducts] = useState(products || []);
@@ -60,11 +62,6 @@ const Collection = () => {
       if (!mainTypeId) {
         setProductTypes([]);
         setBrands([]);
-        setFilters((prev) => ({
-          ...prev,
-          productType: '',
-          brand: '',
-        }));
         return;
       }
 
@@ -76,13 +73,6 @@ const Collection = () => {
 
         setProductTypes(typesResponse?.data?.productTypes || []);
         setBrands(brandsResponse?.data?.brands || []);
-
-        // Clear selections when mainType changes
-        setFilters((prev) => ({
-          ...prev,
-          productType: '',
-          brand: '',
-        }));
       } catch (error) {
         console.error('Error loading product types or brands:', error);
         setProductTypes([]);
@@ -139,13 +129,32 @@ const Collection = () => {
     };
 
     fetchFilteredProducts();
-  }, [filters, products]);
+  }, [
+    filters.mainType,
+    filters.productType,
+    filters.age,
+    filters.gender,
+    filters.brand,
+    filters.minPrice,
+    filters.maxPrice,
+    products,
+  ]);
 
   const handleFilterChange = (filterName, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [filterName]: prev[filterName] === value ? '' : value,
-    }));
+    const newFilters = {
+      ...filters,
+      [filterName]: filters[filterName] === value ? '' : value,
+    };
+    setFilters(newFilters);
+
+    // Update URL params
+    const params = new URLSearchParams();
+    Object.entries(newFilters).forEach(([key, val]) => {
+      if (val && val !== PRICE_MIN && val !== PRICE_MAX) {
+        params.set(key, val);
+      }
+    });
+    setSearchParams(params);
   };
 
   const toggleFilterSection = (section) => {
@@ -165,6 +174,7 @@ const Collection = () => {
       minPrice: PRICE_MIN,
       maxPrice: PRICE_MAX,
     });
+    setSearchParams(new URLSearchParams());
   };
 
   const hasActiveFilters = Object.entries(filters).some(([k, v]) => {
@@ -177,12 +187,32 @@ const Collection = () => {
   // ====== PRICE RANGE (2-way slider) ======
   const handleMinPriceChange = (val) => {
     const nextMin = Math.max(PRICE_MIN, Math.min(Number(val), filters.maxPrice));
-    setFilters((prev) => ({ ...prev, minPrice: nextMin }));
+    const newFilters = { ...filters, minPrice: nextMin };
+    setFilters(newFilters);
+
+    // Update URL params
+    const params = new URLSearchParams();
+    Object.entries(newFilters).forEach(([key, value]) => {
+      if (value && value !== PRICE_MIN && value !== PRICE_MAX) {
+        params.set(key, value);
+      }
+    });
+    setSearchParams(params);
   };
 
   const handleMaxPriceChange = (val) => {
     const nextMax = Math.min(PRICE_MAX, Math.max(Number(val), filters.minPrice));
-    setFilters((prev) => ({ ...prev, maxPrice: nextMax }));
+    const newFilters = { ...filters, maxPrice: nextMax };
+    setFilters(newFilters);
+
+    // Update URL params
+    const params = new URLSearchParams();
+    Object.entries(newFilters).forEach(([key, value]) => {
+      if (value && value !== PRICE_MIN && value !== PRICE_MAX) {
+        params.set(key, value);
+      }
+    });
+    setSearchParams(params);
   };
 
   const minPercent = ((filters.minPrice - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
@@ -460,7 +490,16 @@ const Collection = () => {
                   {/* Reset Button */}
                   <button
                     type="button"
-                    onClick={() => setFilters((p) => ({ ...p, minPrice: PRICE_MIN, maxPrice: PRICE_MAX }))}
+                    onClick={() => {
+                      setFilters((p) => ({ ...p, minPrice: PRICE_MIN, maxPrice: PRICE_MAX }));
+                      const params = new URLSearchParams();
+                      Object.entries(filters).forEach(([key, value]) => {
+                        if (key !== 'minPrice' && key !== 'maxPrice' && value && value !== '') {
+                          params.set(key, value);
+                        }
+                      });
+                      setSearchParams(params);
+                    }}
                     className="w-full py-2 px-4 text-sm text-blue-600 hover:text-blue-800 font-medium rounded border border-blue-300 hover:bg-blue-50 transition"
                   >
                     Đặt lại giá

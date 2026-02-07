@@ -1,27 +1,7 @@
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 
-// Get current directory (for ES modules)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../public/uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Set up multer storage for local file storage
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, uploadsDir);
-  },
-  filename: function(req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
+// Use memory storage instead of disk storage
+const storage = multer.memoryStorage();
 
 // File filter function
 const fileFilter = (req, file, cb) => {

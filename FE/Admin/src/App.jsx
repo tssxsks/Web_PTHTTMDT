@@ -13,6 +13,7 @@ import ProductType from './pages/ProductType';
 import Brand from './pages/Brand';
 import Size from './pages/Size';
 import ProductDetail from './pages/ProductDetail';
+import Banner from './pages/Banner';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('adminToken'));
@@ -49,9 +50,9 @@ const App = () => {
               <Route path="/product-types" element={<ProductType />} />
               <Route path="/brands" element={<Brand />} />
               <Route path="/sizes" element={<Size />} />
-              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="/banners" element={<Banner />} />
               <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/add-product" element={<Add />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>
         </div>

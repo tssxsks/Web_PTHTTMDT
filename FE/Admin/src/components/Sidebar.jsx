@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, BarChart3, X, Tag, Layers, Zap } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, BarChart3, X, Tag, Layers, Zap, Image } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
@@ -14,6 +14,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: 'Loại sản phẩm', path: '/product-types', icon: Layers },
     { label: 'Hãng', path: '/brands', icon: Zap },
     { label: 'Kích cỡ', path: '/sizes', icon: Layers },
+    { label: 'Banner', path: '/banners', icon: Image },
     { label: 'Thống kê', path: '/analytics', icon: BarChart3 },
   ];
 

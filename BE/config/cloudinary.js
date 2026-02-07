@@ -40,5 +40,33 @@ const storage = new CloudinaryStorage({
   }),
 });
 
+// Storage for product images
 export const upload = multer({ storage });
+
+// Storage for banners
+const bannerStorage = new CloudinaryStorage({
+  cloudinary: cloudinaryV2,
+  params: async () => ({
+    folder: "banners",
+    resource_type: "image",
+    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    transformation: [{ width: 1200, height: 400, crop: "limit" }],
+  }),
+});
+
+export const uploadBanner = multer({ storage: bannerStorage });
+
+// Storage for main types
+const mainTypeStorage = new CloudinaryStorage({
+  cloudinary: cloudinaryV2,
+  params: async () => ({
+    folder: "maintypes",
+    resource_type: "image",
+    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    transformation: [{ width: 400, height: 400, crop: "limit" }],
+  }),
+});
+
+export const uploadMainType = multer({ storage: mainTypeStorage });
+
 export { cloudinaryV2 as cloudinary };

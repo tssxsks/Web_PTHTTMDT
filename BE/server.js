@@ -14,6 +14,7 @@ import productTypeRoute from './routes/productTypeRoute.js';
 import brandRoute from './routes/brandRoute.js';
 import sizeRoute from './routes/sizeRoute.js';
 import reviewRoute from './routes/reviewRoute.js';
+import bannerRoute from './routes/bannerRoute.js';
 
 // Import middlewares
 import { rateLimiter } from './middleware/rateLimit.js';
@@ -24,8 +25,6 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 await connectDB();
-
-// ...existing code...
 
 // Middlewares
 app.use(helmet()); // Security headers
@@ -50,6 +49,7 @@ app.use('/api/producttype', productTypeRoute);
 app.use('/api/brand', brandRoute);
 app.use('/api/size', sizeRoute);
 app.use('/api/reviews', reviewRoute);
+app.use('/api/banner', bannerRoute);
 
 // Base route
 app.get('/', (req, res) => {

@@ -49,7 +49,16 @@ export const addMainType = (data) => {
 
 // Cập nhật loại chính
 export const updateMainType = (id, data) => {
-  return api.put(`/maintype/${id}`, data);
+  return api.put(`/maintype/${id}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+// Toggle trạng thái maintype
+export const toggleMainTypeStatus = async (id) => {
+  return api.patch(`/maintype/${id}/toggle_mts`);;
 };
 
 // Xóa loại chính
